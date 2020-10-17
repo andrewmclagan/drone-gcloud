@@ -22,12 +22,12 @@ func main() {
 	app.Version = version
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
-			Name:   "source",
+			Name:   "source_tag",
 			Usage:  "source tag",
 			EnvVar: "PLUGIN_SOURCE",
 		},				
 		cli.StringFlag{
-			Name:   "dest",
+			Name:   "dest_tag",
 			Usage:  "destination tag",
 			EnvVar: "PLUGIN_DEST",
 		},		
@@ -49,6 +49,8 @@ func main() {
 }
 
 func decodeServiceKey(encodedKey string) []byte {
+	logrus.Info(encodedKey)	
+
 	decodedKey, err := base64.StdEncoding.DecodeString(encodedKey)
 
 	if err != nil {
@@ -105,9 +107,9 @@ func run(c *cli.Context) {
 	authenticate(decodedKey)
 
 	for _, repo := range c.StringSlice("repositories") {
-		var src string = repo + ":" + c.String("source")
+		var src string = repo + ":" + c.String("source_tag")
 
-		var dest string = repo + ":" + c.String("dest")
+		var dest string = repo + ":" + c.String("dest_tag")
 
 		_, err := exec.Command("gcloud", "container", "images", "add-tag", src, dest).Output()
 
