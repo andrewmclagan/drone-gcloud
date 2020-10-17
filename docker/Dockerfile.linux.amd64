@@ -1,0 +1,7 @@
+FROM gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+
+RUN gcloud components install kubectl
+
+COPY release/linux/amd64/drone-gcloud-tag /bin/
+
+ENTRYPOINT ["/bin/drone-git-push"]

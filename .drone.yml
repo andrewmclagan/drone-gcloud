@@ -1,16 +1,26 @@
 kind: pipeline
 type: docker
 name: default
-steps:
 
+platform:
+  os: linux
+  arch: amd64
+
+steps:
   - name: build
+    image: golang:1.15
+    commands:
+      - "go build -v -ldflags '-X main.build=${DRONE_BUILD_NUMBER}' -a -o release/linux/amd64/drone-gcloud-tag"
+
+  - name: image
     image: plugins/docker
     settings:
-      repo: andrewmclagan/drone-gcloud
+      dockerfile: docker/Dockerfile.linux.amd64
+      repo: andrewmclagan/drone-gcloud-tag
       username:
         from_secret: docker_username
       password:
-        from_secret: docker_password      
-      tags: 
+        from_secret: docker_password
+      tags:
         - latest
-        - ${DRONE_TAG=${DRONE_COMMIT}}
+        - linux-amd64
