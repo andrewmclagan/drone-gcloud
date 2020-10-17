@@ -16,20 +16,20 @@ var (
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "gcloud plugin"
-	app.Usage = "gcloud plugin"
+	app.Name = "gcloud tag plugin"
+	app.Usage = "gcloud tag plugin"
 	app.Action = run
 	app.Version = version
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:   "source_tag",
 			Usage:  "source tag",
-			EnvVar: "PLUGIN_SOURCE",
+			EnvVar: "PLUGIN_SOURCE_TAG",
 		},				
 		cli.StringFlag{
 			Name:   "dest_tag",
 			Usage:  "destination tag",
-			EnvVar: "PLUGIN_DEST",
+			EnvVar: "PLUGIN_DEST_TAG",
 		},		
 		cli.StringSliceFlag{
 			Name:     "repositories",
@@ -49,8 +49,6 @@ func main() {
 }
 
 func decodeServiceKey(encodedKey string) []byte {
-	logrus.Info(encodedKey)	
-
 	decodedKey, err := base64.StdEncoding.DecodeString(encodedKey)
 
 	if err != nil {
@@ -112,6 +110,8 @@ func run(c *cli.Context) {
 		var dest string = repo + ":" + c.String("dest_tag")
 
 		_, err := exec.Command("gcloud", "container", "images", "add-tag", src, dest).Output()
+		
+		logrus.Info(c)
 
 		if err != nil {
 			logrus.Error(err)
