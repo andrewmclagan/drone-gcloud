@@ -4,4 +4,4 @@ RUN gcloud components install kubectl
 
 COPY release/linux/amd64/drone-gcloud-tag /bin/
 
-ENTRYPOINT ["/bin/drone-git-push"]
+ENTRYPOINT ["/bin/drone-gcloud-tag"]
